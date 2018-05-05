@@ -1,3 +1,4 @@
+#include <avr/wdt.h>//Подключаем библиотеку для работы с watch dog timer
 #include <Wire.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
@@ -20,41 +21,51 @@ DeviceAddress TL0 = { 0x28, 0x6C, 0x91, 0xA9, 0x06, 0x00, 0x00, 0x31 };//Адр�
 float setTemp;//Установленная температура
 float realTemp;//Реальная температура
 bool heaterState = 0;//Состояние нагревателя
-bool debug = 0;//Вкл/откл режим отладки
+bool DEBUG = 0;//Вкл/откл режим отладки
 //int controlDelay;//Задержка опроса.
-//int lastMillis;
+int cCount = 0;
 
 void setup() {
-  pinMode(SENSOR_PLUS,OUTPUT);
-  digitalWrite(SENSOR_PLUS,HIGH);
+  //Инициализация пинов
   pinMode(SENSOR_MINUS,OUTPUT);
   digitalWrite(SENSOR_MINUS,LOW);
+  pinMode(SENSOR_PLUS,OUTPUT);
+  digitalWrite(SENSOR_PLUS,HIGH);
+  
   pinMode(LCD_PLUS,OUTPUT);
   digitalWrite(LCD_PLUS,HIGH);
+  
   pinMode(HEATER_PIN,OUTPUT);
   digitalWrite(HEATER_PIN,LOW);
 
-  setTemp = 37.80;
+  wdt_enable(WDTO_8S);//Включаем watch dog timer и ставим период 8 секунд
+
+  setTemp = 37.80;//Устанавливаем температуру
 //  controlDelay = 5000;
     
   Serial.begin(9600);
-  if(debug != 0){
+  if(DEBUG != 0){
     Serial.println("Debug mode ON");
   } else {
     Serial.println("Debug mode OFF");
   }
  
   sensors.begin();
-  sensors.setResolution(TL0, TEMPERATURE_PRECISION);
+  sensors.setResolution(TL0, TEMPERATURE_PRECISION);//Установка разрешения датчика
 
-  lcd.init();                      // initialize the lcd
+  lcd.init();//Инициализируем lcd
   lcd.backlight();
   lcd.setCursor(0, 1);
   lcd.print(L"Темпер.: ");
 }
 
 void loop(void) {
+  if(cCount > 19){
+    cCount = 0;
+  }
   getTemp();
   tempControl();
   printTempLCD();
+  cCount++;
+  wdt_reset();//Сбрасываем wdt каждый цикл
 }

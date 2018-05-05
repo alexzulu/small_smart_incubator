@@ -2,7 +2,7 @@ void getTemp (){
   float celsius;
   sensors.requestTemperatures();
   celsius = sensors.getTempC(TL0);
-  if(debug == 1){
+  if(DEBUG == 1 && cCount == 0){
     Serial.print("Temp C: ");
     Serial.println(celsius);
   }
@@ -27,15 +27,19 @@ void tempControl(){
   if(realTemp < setTemp){
     if(heaterState == 0 && digitalRead(HEATER_PIN) == LOW){
       digitalWrite(HEATER_PIN,HIGH);
-      heaterState = !heaterState;
-      Serial.println(digitalRead(HEATER_PIN));
+      heaterState = 1;
+      if(DEBUG == 1){
+        Serial.println(digitalRead(HEATER_PIN));
+      }
     }
   }
   if(realTemp >= setTemp){
     if(heaterState == 1 && digitalRead(HEATER_PIN) == HIGH){
       digitalWrite(HEATER_PIN,LOW);
-      heaterState = !heaterState;
-      Serial.println(digitalRead(HEATER_PIN));
+      heaterState = 0;
+      if(DEBUG == 1){
+        Serial.println(digitalRead(HEATER_PIN));
+      }
     }
   }
 }
