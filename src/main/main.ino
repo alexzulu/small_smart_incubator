@@ -20,9 +20,9 @@ DeviceAddress TL0 = { 0x28, 0x6C, 0x91, 0xA9, 0x06, 0x00, 0x00, 0x31 };//Адр�
 float setTemp;//Установленная температура
 float realTemp;//Реальная температура
 bool heaterState = 0;//Состояние нагревателя
-int debug = 0;//Вкл/откл режим отладки
-int controlDelay;//Задержка опроса.
-int lastMillis;
+bool debug = 0;//Вкл/откл режим отладки
+//int controlDelay;//Задержка опроса.
+//int lastMillis;
 
 void setup() {
   pinMode(SENSOR_PLUS,OUTPUT);
@@ -35,7 +35,7 @@ void setup() {
   digitalWrite(HEATER_PIN,LOW);
 
   setTemp = 37.80;
-  controlDelay = 5000;
+//  controlDelay = 5000;
     
   Serial.begin(9600);
   if(debug != 0){

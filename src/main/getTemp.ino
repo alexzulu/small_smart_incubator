@@ -1,12 +1,12 @@
-float getTemp (){
- float celsius;
- sensors.requestTemperatures();
- celsius = sensors.getTempC(TL0);
- if(debug == 1){
-  Serial.print("Temp C: ");
-  Serial.println(celsius);
- }
- realTemp = celsius;
+void getTemp (){
+  float celsius;
+  sensors.requestTemperatures();
+  celsius = sensors.getTempC(TL0);
+  if(debug == 1){
+    Serial.print("Temp C: ");
+    Serial.println(celsius);
+  }
+  realTemp = celsius;
 }
 
 float old;
