@@ -25,9 +25,9 @@ void printHeaterStateLCD(){
   lcd.print(heaterState);
 }
 
-void tempControl(){
+void heaterControl(){
   if(realTemperature < setTemperature){
-    if(heaterState == 0 && digitalRead(HEATER_PIN) == LOW){
+    if(digitalRead(HEATER_PIN) == LOW){
       digitalWrite(HEATER_PIN,HIGH);
       heaterState = 1;
       if(DEBUG == 1){
@@ -36,13 +36,25 @@ void tempControl(){
     }
   }
   if(realTemperature >= setTemperature){
-    if(heaterState == 1 && digitalRead(HEATER_PIN) == HIGH){
+    if(digitalRead(HEATER_PIN) == HIGH){
       digitalWrite(HEATER_PIN,LOW);
       heaterState = 0;
       if(DEBUG == 1){
         Serial.println(digitalRead(HEATER_PIN));
       }
     }
+  }
+}
+
+void temperatureControl(){
+  float currentTime = millis();
+  if(lastRealTemperature != realTemperature){
+    if(currentTime - lastTime > controlDelay){
+      heaterControl();
+      lastTime = currentTime;
+    }
+  }else{
+    lastTime = currentTime;
   }
 }
 

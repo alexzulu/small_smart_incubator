@@ -6,12 +6,11 @@
 
 const float setTemperature = 37.80;//Установленная температура
 const bool DEBUG = 0;//Вкл/откл режим отладки
-//const int controlDelay;//Задержка опроса.
+const int controlDelay = 5000;//Задержка опроса.
+const int ONE_WIRE_BUS = 9; //Нога на которой работает шина
+const int TEMPERATURE_PRECISION = 12; //Разрешение датчика
 
 LCD_1602_RUS lcd(0x27, 16, 2);
-
-#define ONE_WIRE_BUS 9 //Нога на которой работает шина
-#define TEMPERATURE_PRECISION 12 //Разрешение датчика
 
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
@@ -25,6 +24,8 @@ DeviceAddress TL0 = { 0x28, 0x6C, 0x91, 0xA9, 0x06, 0x00, 0x00, 0x31 };//Адр�
 float oldTemperature;//Предыдущее замерянное значение температуры
 float realTemperature;//Реальная температура
 bool heaterState = 0;//Состояние нагревателя
+float lastTime = 0;//Время предыдущего замера
+float lastRealTemperature = 38.00;//Предыдущее значение температуры
 
 void setup() {
   //Инициализация пинов
@@ -62,7 +63,7 @@ void setup() {
 
 void loop(void) {
   realTemperature = getTemp();
-  tempControl();
+  temperatureControl();
   printTempLCD();
   printHeaterStateLCD();
   wdt_reset();//Сбрасываем wdt каждый цикл
