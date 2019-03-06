@@ -30,3 +30,4 @@
 # Ignore generated files,
 *.pdsbak
 *.workspace
+/build/
